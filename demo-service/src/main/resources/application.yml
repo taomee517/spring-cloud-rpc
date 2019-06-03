@@ -1,0 +1,27 @@
+server:
+  port: 5170
+
+spring:
+  application:
+    name: demo-service
+
+  datasource:
+    url: jdbc:mysql://127.0.0.1/db_demo?Unicode=true&characterEncoding=utf8&allowMultiQueries=true&useSSL=false&serverTimezone=PRC
+    driverClassName: com.mysql.jdbc.Driver
+    username: root
+    password: 123456
+    filters:  stat,wall,log4j
+    connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+    initialSize:  2
+    minIdle: 1
+    maxActive: 4
+    maxWait: 60000
+
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://127.0.0.1:8761/eureka/
+  instance:
+    preferIpAddress: true
+    instanceId: ${spring.cloud.client.ip-address}:${server.port}

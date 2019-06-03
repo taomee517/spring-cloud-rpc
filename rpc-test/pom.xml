@@ -9,26 +9,24 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>demo-api</artifactId>
-
-    <properties>
-        <lombok-version>1.16.22</lombok-version>
-        <spring-rpc-version>1.0.0</spring-rpc-version>
-    </properties>
+    <artifactId>rpc-test</artifactId>
 
     <dependencies>
-        <!--lombok-->
         <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>${lombok-version}</version>
+            <groupId>com.basic</groupId>
+            <artifactId>demo-api</artifactId>
+            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>com.basic</groupId>
             <artifactId>spring-rpc</artifactId>
-            <version>${spring-rpc-version}</version>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
-
 
 </project>
