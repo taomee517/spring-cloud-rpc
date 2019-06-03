@@ -6,7 +6,12 @@
 
     <groupId>com.basic</groupId>
     <artifactId>spring-cloud-rpc</artifactId>
+    <packaging>pom</packaging>
     <version>1.0.0</version>
+    <modules>
+        <module>spring-eureka</module>
+        <module>demo-api</module>
+    </modules>
 
 
 </project>
