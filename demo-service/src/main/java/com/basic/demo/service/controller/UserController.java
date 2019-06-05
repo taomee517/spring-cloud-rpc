@@ -14,7 +14,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping(value = "user", produces = "application/json")
-public class UserController implements IUserService{
+public class UserController{
 
     @Autowired
     JdbcTemplate jdbcTemplate;
@@ -23,7 +23,7 @@ public class UserController implements IUserService{
     private DiscoveryClient client;
 
 
-    @Override
+
     @ResponseBody
     @GetMapping(value = "/{id}")
     public User queryById(@PathVariable(value = "id") Integer id) {
@@ -33,7 +33,6 @@ public class UserController implements IUserService{
         return user;
     }
 
-    @Override
     @ResponseBody
     @GetMapping(value = "/all")
     public List<User> getAllUsers() {
@@ -42,7 +41,6 @@ public class UserController implements IUserService{
         return users;
     }
 
-    @Override
     @ResponseBody
     @PostMapping(value = "/insert")
     public Boolean insertUser(@RequestBody  User user) {
