@@ -1,21 +1,23 @@
 package com.basic.spring.rpc.service;
 
 
-import com.basic.rpc.annotations.MyMethod;
-import com.basic.rpc.annotations.MyService;
+
 import com.basic.spring.rpc.pojo.User;
+import feign.Headers;
+import feign.Param;
+import feign.RequestLine;
 
 import java.util.List;
 
-@MyService("demo-service")
 public interface IUserService {
 
-    @MyMethod("queryById")
-    User queryById(Integer id);
+    @RequestLine("GET /user/{id}")
+    User queryById(@Param("id") Integer id);
 
-    @MyMethod("getAllUsers")
+    @RequestLine("GET /user/all")
     List<User> getAllUsers();
 
-    @MyMethod("insertUser")
+    @Headers({"Content-Type: application/json","Accept: application/json"})
+    @RequestLine("POST /user/insert")
     Boolean insertUser(User user);
 }

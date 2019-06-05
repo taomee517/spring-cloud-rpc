@@ -1,57 +1,45 @@
 package com.basic.test;
 
-import com.basic.rpc.eureka.MyEurekaFactory;
+import com.basic.rpc.eureka.EurakaClientManager;
+import com.basic.rpc.feign.FeignClientManager;
 import com.basic.spring.rpc.pojo.User;
 import com.basic.spring.rpc.service.IUserService;
-import com.netflix.appinfo.ApplicationInfoManager;
 import com.netflix.appinfo.InstanceInfo;
-import com.netflix.appinfo.MyDataCenterInstanceConfig;
-import com.netflix.discovery.DefaultEurekaClientConfig;
-import com.netflix.discovery.DiscoveryManager;
-import com.netflix.discovery.EurekaClient;
-import com.netflix.discovery.shared.Application;
-import com.netflix.discovery.shared.Applications;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 
 import java.util.List;
 
+@Slf4j
 public class SpringTest {
     @Test
     public void methodTest() {
-        MyEurekaFactory factory = MyEurekaFactory.gi();
-        IUserService service = factory.createService(IUserService.class);
+        IUserService service = FeignClientManager.getApiClient(IUserService.class, "DEMO-SERVICE");
+        List<User> users = service.getAllUsers();
+        log.info("用户总数为：{}", users);
         User user = service.queryById(8);
-        System.out.println(user.getName() + "," + user.getAge());
+        log.info("ID为8的用户为：{}", user);
+        User u = new User();
+        u.setName("Lucas");
+        u.setAge(16);
+        boolean b = service.insertUser(u);
+        log.info("用户:{} ,插入成功:{}", u, b);
     }
 
     @Test
     public void getInstance() {
-
-        //这个名称需要用你的服务的名称替换
-        String serviceName = "demo-service";
-        //最关键的代码，加载配置文件，向Eureka发送请求，获取服务列表。
-        MyDataCenterInstanceConfig instanceConfig =  new MyDataCenterInstanceConfig();
-        DefaultEurekaClientConfig clientConfig = new DefaultEurekaClientConfig();
-        DiscoveryManager manager = DiscoveryManager.getInstance();
-        manager.initComponent(instanceConfig, clientConfig);
-        ApplicationInfoManager.getInstance().setInstanceStatus(InstanceInfo.InstanceStatus.UP);
-        EurekaClient client = manager.getEurekaClient();
-
-        //获取从Eureka获取的全部的应用列表
-        Applications apps = client.getApplications();
-        //根据应用的名称获取已经可用的应用对象，可能是注册了多个。
-        Application app = apps.getRegisteredApplications(serviceName);
-        String reqUrl = null;
-        if(app!=null){
-            List<InstanceInfo> instances = app.getInstances();
-            if (instances.size() > 0) {
-                //获取其中一个应用实例，这里可以添加路由算法
-                InstanceInfo instance = instances.get(0);
-                //获取公开的地址和端口
-                reqUrl = "http://" + instance.getIPAddr() + ":" + instance.getPort();
-            }
+        String serviceName = "DEMO-SERVICE";
+        List<InstanceInfo> instancesByVipAddress = EurakaClientManager.getInstance().getInstancesByVipAddress(serviceName, false);
+        log.info("{}的实例个数：{}", serviceName, instancesByVipAddress.size());
+        StringBuilder sb = new StringBuilder();
+        for (InstanceInfo instance : instancesByVipAddress) {
+            InstanceInfo.InstanceStatus status = instance.getStatus();
+            sb.append("http://").append(instance.getHostName()).append(":").append(instance.getPort());
+            log.info("{} 注册地址是：{}", serviceName, sb.toString());
+            log.info("ip: {}",instance.getHostName());
+            log.info("port: {}", instance.getPort());
+            log.info("status: {}", status.name());
         }
-        System.out.println(serviceName.toUpperCase() + "服务的运行地址是："+reqUrl);
     }
 
 
