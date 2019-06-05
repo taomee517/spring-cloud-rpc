@@ -27,13 +27,13 @@ public class EurakaClientManager {
         return applicationInfoManager;
     }
 
-//    private static synchronized EurekaClient initializeEurekaClient(ApplicationInfoManager applicationInfoManager, EurekaClientConfig clientConfig) {
-//        if (eurekaClient == null) {
-//            eurekaClient = new DiscoveryClient(applicationInfoManager, clientConfig);
-//        }
-//
-//        return eurekaClient;
-//    }
+    private static synchronized EurekaClient initializeEurekaClient(ApplicationInfoManager applicationInfoManager, EurekaClientConfig clientConfig) {
+        if (eurekaClient == null) {
+            eurekaClient = new DiscoveryClient(applicationInfoManager, clientConfig);
+        }
+
+        return eurekaClient;
+    }
 
 
     private EurakaClientManager(){
@@ -45,8 +45,8 @@ public class EurakaClientManager {
             synchronized (EurakaClientManager.class){
                 if (eurekaClient==null){
                     ApplicationInfoManager applicationInfoManager = initializeApplicationInfoManager(new MyDataCenterInstanceConfig());
-//                    eurekaClient = initializeEurekaClient(applicationInfoManager, new DefaultEurekaClientConfig());
-                    eurekaClient = new DiscoveryClient(applicationInfoManager, new DefaultEurekaClientConfig());
+                    eurekaClient = initializeEurekaClient(applicationInfoManager, new DefaultEurekaClientConfig());
+//                    eurekaClient = new DiscoveryClient(applicationInfoManager, new DefaultEurekaClientConfig());
                 }
             }
         }
