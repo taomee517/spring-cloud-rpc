@@ -2,6 +2,7 @@ package com.basic.test;
 
 import com.basic.rpc.eureka.EurakaClientManager;
 import com.basic.rpc.feign.FeignClientManager;
+import com.basic.rpc.ribbon.RibbonClientManager;
 import com.basic.spring.rpc.pojo.User;
 import com.basic.spring.rpc.service.IUserService;
 import com.netflix.appinfo.InstanceInfo;
@@ -14,7 +15,7 @@ import java.util.List;
 public class SpringTest {
     @Test
     public void methodTest() {
-        IUserService service = FeignClientManager.getApiClient(IUserService.class, "DEMO-SERVICE");
+        IUserService service = FeignClientManager.getApiClientByRibbon(IUserService.class, "DEMO-SERVICE");
         List<User> users = service.getAllUsers();
         log.info("用户总数为：{}", users);
         User user = service.queryById(8);
@@ -40,6 +41,12 @@ public class SpringTest {
             log.info("port: {}", instance.getPort());
             log.info("status: {}", status.name());
         }
+    }
+
+    @Test
+    public void getUrlByRibbon(){
+        String serviceName = "DEMO-SERVICE";
+        System.out.println("通过Ribbon获取的" + serviceName + "注册地址是：" + RibbonClientManager.getManager().getAvailableServerUrl(serviceName));
     }
 
 
